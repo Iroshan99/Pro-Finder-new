@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "profinderbot",
+  "private_key_id": "c1c9919b513d78a04b932f7682edbc5728eff1c2",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDG5AfHy5Skwb9T\n40cbarYH/hYhyFxTUcaM8kHGllZatr4NfrwMjP7zPa6F6E5MBnkropQ+gkXf/pEK\nzzvA5c/pVjvgljq4P+8vO3V5rIvy+QA3a4Ld6/IqjJZNeS+P3XqoGP2IN8xgbVTW\nxB2el6mxGzaHq4iHLwn0CzDF9bYuI21FFJCQlY9FTyea7YZtPPUKEnNUWpLDsidy\nPiSlCP4zgqjJIh09Uj+LTn1jdeHXqd1aLZrlk3dh4CK9036n7hXk1ZP46Dx0pf4X\neUeAPx2sOQO+cDnbKL7eKHUpA29wQFIbpL1v3eVHexYCQxtihoLk9O2JUYegP1QT\nbCYEc3IVAgMBAAECggEAAVRctI2Cil42ZbZDIoZ7/gfiscoeZK4xkH3XSh91WoWw\nAo4VoSEMj6eBANzBltXqPgwhrcNLYHwND/a8ewWH3MYnTOqKk1jvqkl293lbgoqY\nlKypNmUrFfUhO6/zAFhMlBtKqPwnTebp//kipSdCMQoyB9K+05lRMzdWvAc9XW4u\nXdhjXX7XmksUsP5lwu82OxR+EvRiQ4tabMWSP2n0hJUkOStSN26g6wa/HckEH/H0\nBQ2xC2gseVd7eLTBEdH72GDdSW9mo90AHJ6V6G3pVaJaGGkjWS3PyAfa16WxSI3B\n71iJUHpMoTkseC3GBUWmQPNK7zgk8yyVQbuB1BkfJwKBgQD3tL1D7ua6LjwXX+2o\n4/VT+6GLe21UzBA7VZ1yTKVrYEP1+zJO9o5PjgTP1JI6/KsAfSd5W1kPCI/G5r5+\nX8Y7X0isM9j6RdDogVoesr+Z2ZwqWy6NHnH8ApH4b6zC+1NXIWyxp155ek2msy3P\nZSLIg4aLiM1Y1lCiBpYD4jJ/ywKBgQDNjNyF6Bd9Lzem8m5GDmiMQjM53IQMv9Fj\niWA7f7al+DLzIlkcx+DkNkgiO4sPTMeaxTwRHu6wJ8mLHsQGjJv7gCs5SSC+qygT\nS7yQoalCDr/VfpWNOzBTzuLvT+cp1FMhP/KXUNEMmVgnhWbfCrrlkESrclvDqw9X\nlcTNG+nZnwKBgHaftpfG2/XDWIG1LeJYsM70TWu3wyb9xrQzjwAC1qEya7lr/66z\nAnn0wDcrTJA1GktUpEfIyECb0Abnz8hDY3JhcjMNbVaFgsMl1xumbH1oKhJaslNg\nhiOys2bvTCPgKgwq9JurVGIGgRNY8ZJFk7/ExPUjoXtuvxSo5MSdWaO7AoGBAIet\ncialc1O7ZhW5slZlzla+n8eSqkssFk+Ib0/21h4pfaAFTSL1QJoCxoxqFzlLKfoc\nNLDsZQs7yAofja7xA0j4ag+PGKEiovpRpK8nNm0XBUMsIhUuO5EmX58tc92lfBXX\new6sVsDlO04i/Ss+ju1W1C0C+FVoxWC/yD7HLQ3rAoGBAN2riGQ1gXnKBEuMBNrB\n3aanN/XtxOsjivZg6KQm6EDVY774oR21d/CGXv2BHMP8QfbP4YVMOY0FLodISi7k\nz3kmXofSUVqq1OyLQtQ8YF8wYbhlUeD886dN4QQwG4CaA6VkEF1szvFk7efD067f\n+a4j0TrvPF7HVTQR0mcM/6Id\n-----END PRIVATE KEY-----\n",
+  "client_email": "profinderbot@profinderbot.iam.gserviceaccount.com",
+  "client_id": "116520958563469872410",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/profinderbot%40profinderbot.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

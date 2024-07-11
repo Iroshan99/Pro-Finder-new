@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "713646353219",
+    "firebase_url": "https://iroshan-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "iroshan",
+    "storage_bucket": "iroshan.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:713646353219:android:1df2b415bab445fea59df6",
+        "android_client_info": {
+          "package_name": "com.example.test8"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSh7ktESnbNL5KnCO3MI1xnmDINZHuwuw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

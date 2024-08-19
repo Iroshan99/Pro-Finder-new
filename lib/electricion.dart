@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:test8/ChatPage.dart';
+import 'package:test8/PaymentPortal.dart';
 import 'package:test8/accounts.dart';
 import 'package:test8/category.dart';
 import 'package:test8/notification.dart';
@@ -66,7 +67,7 @@ class _PaintersPageState extends State<electricion> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Electricions'),
+        title: Text('Elctricions'),
         backgroundColor: Colors.blue,
       ),
       body: SingleChildScrollView(
@@ -205,13 +206,14 @@ class ServiceProviderProfile extends StatelessWidget {
                 Spacer(),
                 ElevatedButton(
                   onPressed: () {
-                    // Handle payment logic here
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentPortal()));
                   },
                   child: Text('Pay Now'),
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white, backgroundColor: Colors.blue,
                     minimumSize: Size(double.infinity, 50),
                   ),
+                    
                 ),
               ],
             ),

@@ -5,6 +5,7 @@ import 'package:test8/ChatPage.dart';
 import 'package:test8/chat_screen.dart';
 import 'package:test8/homeprovider.dart';
 import 'package:test8/accountprovider.dart';
+import 'package:test8/loginprovider.dart';
 import 'package:test8/notification.dart';
 import 'package:test8/RequestHistoryPage.dart'; // Import the new RequestHistoryPage
 
@@ -15,15 +16,46 @@ class homeprovider extends StatefulWidget {
 
 class _RequestsPageState extends State<homeprovider> {
   User? currentUser;
+  String profilePicUrl = '';
 
   @override
   void initState() {
     super.initState();
     currentUser = FirebaseAuth.instance.currentUser;
+    fetchProfilePic();
   }
 
+  Future<void> fetchProfilePic() async {
+  if (currentUser != null) {
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('service_providers')
+        .doc(currentUser!.uid)
+        .get();
+
+    if (userDoc.exists) {
+      Map<String, dynamic>? data = userDoc.data() as Map<String, dynamic>?;
+      if (data != null && data.containsKey('profilePicUrl')) {
+        setState(() {
+          profilePicUrl = data['profilePicUrl'];
+        });
+        print('Profile picture URL fetched: $profilePicUrl');
+      } else {
+        print('Profile picture URL not found in Firestore.');
+      }
+    } else {
+      print('User document does not exist.');
+    }
+  } else {
+    print('No current user found.');
+  }
+}
+
+
   Future<String> fetchUserName(String userId) async {
-    DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('service_providers').doc(userId).get();
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('service_providers')
+        .doc(userId)
+        .get();
     if (userDoc.exists) {
       return userDoc['name'] ?? 'Unknown User';
     }
@@ -55,12 +87,41 @@ class _RequestsPageState extends State<homeprovider> {
       'userName': userName,
     });
 
-    String message = status == 'accepted' ? 'Your request from $userName has been accepted' : 'Your request from $userName has been rejected';
+    String message = status == 'accepted'
+        ? 'Your request from $userName has been accepted'
+        : 'Your request from $userName has been rejected';
     sendMessage(userId, userName, message);
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text('Request $status'),
     ));
+  }
+
+  void _confirmLogout(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Log Out'),
+          content: Text('Are you sure you want to log out?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('No'),
+            ),
+            TextButton(
+              child: Text("Yes"),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                _logout(context); // Proceed with logout
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -69,6 +130,21 @@ class _RequestsPageState extends State<homeprovider> {
       appBar: AppBar(
         title: Text('Service Provider Requests'),
         backgroundColor: Colors.blue,
+        actions: [
+          GestureDetector(
+            onTap: () => _confirmLogout(context),
+            child: CircleAvatar(
+              radius: 20,
+              backgroundImage: profilePicUrl.isNotEmpty
+                  ? NetworkImage(profilePicUrl)
+                  : AssetImage('assets/default_profile.JPG') as ImageProvider,
+              onBackgroundImageError: (exception, stackTrace) {
+                print('Failed to load profile picture: $exception');
+              },
+            ),
+          ),
+          SizedBox(width: 10),
+        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -119,7 +195,8 @@ class _RequestsPageState extends State<homeprovider> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen()));
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => ChatScreen()));
         },
         backgroundColor: Colors.blue,
         child: Icon(
@@ -136,26 +213,35 @@ class _RequestsPageState extends State<homeprovider> {
             IconButton(
               icon: Icon(Icons.history, color: Colors.white),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => RequestHistoryPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => RequestHistoryPage()));
               },
             ),
-            
             IconButton(
               icon: Icon(Icons.chat, color: Colors.white),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ChatPage()));
               },
             ),
             IconButton(
               icon: Icon(Icons.account_circle, color: Colors.white),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => accountprovider()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => accountprovider()));
               },
             ),
-            
           ],
         ),
       ),
+    );
+  }
+
+  void _logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => loginprovider()),
     );
   }
 }

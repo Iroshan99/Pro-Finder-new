@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:test8/firebase_auth_implementation/firebase_auth_services.dart';
 import 'package:test8/homeprovider.dart';
 import 'package:test8/signupprovider.dart';
+import 'package:test8/forgot_password.dart';
 
 class loginprovider extends StatelessWidget {
   @override
@@ -13,7 +14,8 @@ class loginprovider extends StatelessWidget {
       routes: {
         '/': (context) => SignInPage(),
         '/homepage': (context) => homeprovider(),
-        // other routes...
+        '/forgotpassword': (context) => ForgotPasswordPage(),
+        
       },
     );
   }
@@ -74,7 +76,7 @@ class SignInPage extends StatelessWidget {
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                    labelText: 'Email or Phone No',
+                    labelText: 'Email',
                     labelStyle: TextStyle(color: Colors.black),
                     fillColor: Color.fromARGB(44, 168, 170, 58),
                     filled: true,
@@ -106,8 +108,7 @@ class SignInPage extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () => _signIn(context),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
+                        backgroundColor: Color.fromARGB(255, 6, 8, 134),
                         padding: EdgeInsets.symmetric(vertical: 15),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
@@ -121,6 +122,21 @@ class SignInPage extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                    ),
+                  ),
+                ),
+                 SizedBox(height: 20),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/forgotpassword');
+                  },
+                  child: Text(
+                    'Forgot Password?',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      decoration: TextDecoration.underline,
                     ),
                   ),
                 ),

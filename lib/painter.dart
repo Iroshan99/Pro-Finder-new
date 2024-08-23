@@ -144,7 +144,7 @@ class _PaintersPageState extends State<painter> {
             IconButton(
               icon: Icon(Icons.category, color: Colors.white),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => category()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
                 // Handle category
               },
             ),

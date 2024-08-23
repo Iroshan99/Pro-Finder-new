@@ -66,7 +66,7 @@ class _PaintersPageState extends State<tutor> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tutors'),
+        title: Text('cleaners'),
         backgroundColor: Colors.blue,
       ),
       body: SingleChildScrollView(
@@ -144,7 +144,7 @@ class _PaintersPageState extends State<tutor> {
             IconButton(
               icon: Icon(Icons.category, color: Colors.white),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => category()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
                 // Handle category
               },
             ),

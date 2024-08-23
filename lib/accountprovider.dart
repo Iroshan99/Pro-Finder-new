@@ -22,7 +22,6 @@ class ServiceProviderRegistrationPage extends StatefulWidget {
   @override
   _ServiceProviderRegistrationPageState createState() => _ServiceProviderRegistrationPageState();
 }
-
 class _ServiceProviderRegistrationPageState extends State<ServiceProviderRegistrationPage> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController locationController = TextEditingController();

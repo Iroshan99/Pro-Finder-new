@@ -11,10 +11,7 @@ import 'package:test8/plumber.dart';
 import 'package:test8/requests.dart';
 import 'package:test8/tutor.dart';
 
-
-
-
-class category extends StatelessWidget {
+class CategoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -30,14 +27,15 @@ class ProFinderPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'category',
+          'Category',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blue.shade800,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) =>home()));
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => home()));
           },
         ),
       ),
@@ -58,52 +56,50 @@ class ProFinderPage extends StatelessWidget {
               children: [
                 CategoryButton(
                   title: 'Plumber',
-                  icon: Icons.build,
+                  imagePath: 'assets/plumber.jpg', 
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>plumber()));
-                   
-                    // Navigate to plumber service providers page
-                    // You can use Navigator.push() here
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => plumber()));
                   },
                 ),
                 CategoryButton(
                   title: 'Painter',
-                  icon: Icons.format_paint,
+                  imagePath: 'assets/painter.png', 
                   onPressed: () {
-                     Navigator.push(context, MaterialPageRoute(builder: (context)=>painter()));
-                    // Navigate to painter service providers page
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => painter()));
                   },
                 ),
                 CategoryButton(
                   title: 'Electrician',
-                  icon: Icons.flash_on,
+                  imagePath: 'assets/Electrician.jpg', 
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>electricion()));
-                    // Navigate to electrician service providers page
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => electricion()));
                   },
                 ),
                 CategoryButton(
                   title: 'Chef',
-                  icon: Icons.restaurant,
+                  imagePath: 'assets/chef.png', 
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>chef()));
-                    // Navigate to chef service providers page
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: (context) => chef()));
                   },
                 ),
                 CategoryButton(
-                  title: 'Coaching',
-                  icon: Icons.school,
+                  title: 'Cleaner',
+                  imagePath: 'assets/tutor.jpg', 
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>tutor()));
-                    // Navigate to coaching service providers page
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => tutor()));
                   },
                 ),
                 CategoryButton(
                   title: 'Care Giver',
-                  icon: Icons.favorite,
+                  imagePath: 'assets/Caregiver.jpg', 
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>caregiver()));
-                    // Navigate to care giver service providers page
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => caregiver()));
                   },
                 ),
               ],
@@ -119,36 +115,36 @@ class ProFinderPage extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.request_page, color: Colors.white),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => requests()));
-                // Handle requests
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => requests()));
               },
             ),
             IconButton(
               icon: Icon(Icons.notifications, color: Colors.white),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => notification()));
-                // Handle notifications
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => notification()));
               },
             ),
             IconButton(
               icon: Icon(Icons.category, color: Colors.white),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => category()));
-                // Handle category
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CategoryPage()));
               },
             ),
             IconButton(
               icon: Icon(Icons.chat, color: Colors.white),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage()));
-                // Handle chat
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ChatPage()));
               },
             ),
             IconButton(
               icon: Icon(Icons.account_circle, color: Colors.white),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => accounts()));
-                // Handle account
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => accounts()));
               },
             ),
           ],
@@ -160,10 +156,14 @@ class ProFinderPage extends StatelessWidget {
 
 class CategoryButton extends StatelessWidget {
   final String title;
-  final IconData icon;
+  final String imagePath;
   final VoidCallback onPressed;
 
-  CategoryButton({required this.title, required this.icon, required this.onPressed});
+  CategoryButton({
+    required this.title,
+    required this.imagePath,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -174,10 +174,9 @@ class CategoryButton extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              size: 50,
-              color: Colors.blue,
+            CircleAvatar(
+              radius: 60,
+              backgroundImage: AssetImage(imagePath),
             ),
             SizedBox(height: 10),
             Text(
@@ -193,3 +192,9 @@ class CategoryButton extends StatelessWidget {
     );
   }
 }
+
+  
+
+
+
+

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:test8/ChatPage.dart';
 import 'package:test8/chat_screen.dart';
 import 'package:test8/loginuser.dart';
@@ -13,8 +14,6 @@ import 'package:test8/category.dart';
 import 'package:test8/accounts.dart';
 import 'package:test8/notification.dart';
 
-
-
 class home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -26,6 +25,43 @@ class home extends StatelessWidget {
 }
 
 class ProFinderPage extends StatelessWidget {
+  final User? user = FirebaseAuth.instance.currentUser;
+
+  void _logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => loginuser()),
+    );
+  }
+
+  void _showLogoutConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Logout Confirmation"),
+          content: Text("Are you sure you want to logout?"),
+          actions: <Widget>[
+            TextButton(
+              child: Text("No"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text("Yes"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _logout(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,12 +71,20 @@ class ProFinderPage extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.blue,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) =>loginuser()));
-          },
-        ),
+       
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 16.0),
+            child: GestureDetector(
+              onTap: () => _showLogoutConfirmation(context),
+              child: CircleAvatar(
+                backgroundImage: user?.photoURL != null
+                    ? NetworkImage(user!.photoURL!)
+                    : AssetImage('assets/default_profile.JPG') as ImageProvider,
+              ),
+            ),
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -49,62 +93,62 @@ class ProFinderPage extends StatelessWidget {
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Search...',
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+                prefixIcon: Icon(Icons.search),
               ),
             ),
           ),
           Expanded(
             child: GridView.count(
               crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              padding: EdgeInsets.all(10),
               children: [
                 CategoryButton(
                   title: 'Plumber',
-                  icon: Icons.build,
+                  imagePath: 'assets/plumber.jpg',
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>plumber()));
-                   
-                    // Navigate to plumber service providers page
-                    // You can use Navigator.push() here
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => plumber()));
                   },
                 ),
                 CategoryButton(
                   title: 'Painter',
-                  icon: Icons.format_paint,
+                  imagePath: 'assets/painter.png',
                   onPressed: () {
-                     Navigator.push(context, MaterialPageRoute(builder: (context)=>painter()));
-                    // Navigate to painter service providers page
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => painter()));
                   },
                 ),
                 CategoryButton(
                   title: 'Electrician',
-                  icon: Icons.flash_on,
+                  imagePath: 'assets/Electrician.jpg',
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>electricion()));
-                    // Navigate to electrician service providers page
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => electricion()));
                   },
                 ),
                 CategoryButton(
                   title: 'Chef',
-                  icon: Icons.restaurant,
+                  imagePath: 'assets/chef.png',
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>chef()));
-                    // Navigate to chef service providers page
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => chef()));
                   },
                 ),
                 CategoryButton(
-                  title: 'Coaching',
-                  icon: Icons.school,
+                  title: 'Cleaner',
+                  imagePath: 'assets/tutor.jpg',
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>tutor()));
-                    // Navigate to coaching service providers page
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => tutor()));
                   },
                 ),
                 CategoryButton(
                   title: 'Care Giver',
-                  icon: Icons.favorite,
+                  imagePath: 'assets/Caregiver.jpg',
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>caregiver()));
-                    // Navigate to care giver service providers page
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => caregiver()));
                   },
                 ),
               ],
@@ -132,35 +176,30 @@ class ProFinderPage extends StatelessWidget {
               icon: Icon(Icons.request_page, color: Colors.white),
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => requests()));
-                // Handle requests
               },
             ),
             IconButton(
               icon: Icon(Icons.notifications, color: Colors.white),
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => notification()));
-                // Handle notifications
               },
             ),
             IconButton(
               icon: Icon(Icons.category, color: Colors.white),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => category()));
-                // Handle category
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
               },
             ),
             IconButton(
               icon: Icon(Icons.chat, color: Colors.white),
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage()));
-                // Handle chat
               },
             ),
             IconButton(
               icon: Icon(Icons.account_circle, color: Colors.white),
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => accounts()));
-                // Handle account
               },
             ),
           ],
@@ -172,36 +211,60 @@ class ProFinderPage extends StatelessWidget {
 
 class CategoryButton extends StatelessWidget {
   final String title;
-  final IconData icon;
+  final String imagePath;
   final VoidCallback onPressed;
 
-  CategoryButton({required this.title, required this.icon, required this.onPressed});
+  CategoryButton({required this.title, required this.imagePath, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onPressed,
       child: Card(
-        elevation: 5,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 50,
-              color: Colors.blue,
-            ),
-            SizedBox(height: 10),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        elevation: 8,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+           
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 10,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Image.asset(
+                  imagePath,
+                  height: 100,
+                  width: 100,
+                ),
               ),
-            ),
-          ],
+              SizedBox(height: 10),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
+
+

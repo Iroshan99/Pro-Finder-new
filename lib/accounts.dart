@@ -7,7 +7,6 @@ import 'package:test8/notification.dart';
 import 'package:test8/category.dart';
 import 'package:test8/requests.dart';
 
-
 class accounts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -69,7 +68,12 @@ class _UserRegistrationPageState extends State<UserRegistrationPage> {
       });
     }
 
-    // Navigate to next page (e.g., home page)
+    // Show a confirmation message
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Data Saved Successfully!')),
+    );
+
+    // Navigate to the next page (e.g., home page)
     Navigator.push(context, MaterialPageRoute(builder: (context) => home()));
   }
 
@@ -77,27 +81,79 @@ class _UserRegistrationPageState extends State<UserRegistrationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Account'),
+        title: Text(
+          'User Account',
+          style: TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.blue.shade800,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back_ios_new),
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => home()));
           },
         ),
-        backgroundColor: Colors.blue,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(controller: nameController, decoration: InputDecoration(labelText: 'Name')),
-            TextField(controller: locationController, decoration: InputDecoration(labelText: 'Location')),
-            TextField(controller: mobileController, decoration: InputDecoration(labelText: 'Mobile Number')),
-            ElevatedButton(
-              onPressed: () => registerUser(context),
-              child: Text('Save Data'),
-            ),
-          ],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.blue.shade200, Colors.blue.shade900],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              SizedBox(height: 50),
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  prefixIcon: Icon(Icons.person),
+                ),
+              ),
+              SizedBox(height: 15.0),
+              TextField(
+                controller: locationController,
+                decoration: InputDecoration(
+                  labelText: 'Location',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  prefixIcon: Icon(Icons.location_on),
+                ),
+              ),
+              SizedBox(height: 10.0),
+              TextField(
+                controller: mobileController,
+                decoration: InputDecoration(
+                  labelText: 'Mobile Number',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  prefixIcon: Icon(Icons.phone),
+                ),
+              ),
+              SizedBox(height: 20.0),
+              ElevatedButton(
+                onPressed: () => registerUser(context),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                ),
+                child: Text(
+                  'Save Data',
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: BottomAppBar(
@@ -120,7 +176,7 @@ class _UserRegistrationPageState extends State<UserRegistrationPage> {
             IconButton(
               icon: Icon(Icons.category, color: Colors.white),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => category()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
               },
             ),
             IconButton(

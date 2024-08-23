@@ -3,8 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:test8/firebase_auth_implementation/firebase_auth_services.dart';
 import 'package:test8/home.dart';
 import 'package:test8/signupuser.dart';
+import 'package:test8/forgot_password.dart'; 
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class loginuser extends StatelessWidget {
+class LoginUser extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,7 +15,7 @@ class loginuser extends StatelessWidget {
       routes: {
         '/': (context) => SignInPage(),
         '/homepage': (context) => home(),
-        // other routes...
+        '/forgotpassword': (context) => ForgotPasswordPage(),
       },
     );
   }
@@ -21,13 +23,14 @@ class loginuser extends StatelessWidget {
 
 class SignInPage extends StatelessWidget {
   final FirebaseAuthService _auth = FirebaseAuthService();
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    
   }
 
   @override
@@ -41,11 +44,11 @@ class SignInPage extends StatelessWidget {
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-      
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => signupuser()));
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => signupuser()));
           },
         ),
       ),
@@ -63,30 +66,28 @@ class SignInPage extends StatelessWidget {
             padding: EdgeInsets.only(left: 15, right: 15, top: 200),
             child: Column(
               children: [
-                SizedBox(height: 35,),
+                SizedBox(height: 60),
                 Text(
                   'Log In as User',
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
-                    
-                    
-                    
                   ),
                 ),
                 SizedBox(height: 30),
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                    labelText: 'Email or Phone No',
+                    labelText: 'Email',
                     labelStyle: TextStyle(color: Colors.black),
                     fillColor: Color.fromARGB(44, 168, 170, 58),
                     filled: true,
-                     border: OutlineInputBorder(
+                    border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
                       borderSide: BorderSide.none,
                     ),
+                    prefixIcon: Icon(Icons.email, color: Colors.black), // Email icon
                   ),
                   style: TextStyle(color: Colors.black),
                 ),
@@ -102,6 +103,7 @@ class SignInPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.0),
                       borderSide: BorderSide.none,
                     ),
+                    prefixIcon: Icon(Icons.lock, color: Colors.black), // Password icon
                   ),
                   obscureText: true,
                   style: TextStyle(color: Colors.black),
@@ -110,8 +112,7 @@ class SignInPage extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () => _signIn(context),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
+                    backgroundColor: Color.fromARGB(255, 6, 8, 134),
                     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -126,6 +127,20 @@ class SignInPage extends StatelessWidget {
                     ),
                   ),
                 ),
+                SizedBox(height: 20),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/forgotpassword');
+                  },
+                  child: Text(
+                    'Forgot Password?',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -135,27 +150,74 @@ class SignInPage extends StatelessWidget {
   }
 
   void _signIn(BuildContext context) async {
-    String email = _emailController.text;
-    String password = _passwordController.text;
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
 
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
       User? user = userCredential.user;
 
       if (user != null) {
-        print("Successfully logged in");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("You are successfully logged in"),
+            backgroundColor: Colors.green,
+          ),
+        );
         Navigator.pushNamed(context, "/homepage");
       } else {
-        print("Some error occurred");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Some error occurred"),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
+    } on FirebaseAuthException catch (e) {
+      String errorMessage;
+      if (e.code == 'user-not-found') {
+        errorMessage = "No user found for that email.";
+      } else if (e.code == 'wrong-password') {
+        errorMessage = "Incorrect password.";
+      } else {
+        errorMessage = "An error occurred. Please try again.";
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Colors.red,
+        ),
+      );
     } catch (e) {
-      print("Error: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("An error occurred. Please try again."),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<String?> getUserRole(String uid) async {
+    DocumentSnapshot doc =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    if (doc.exists) {
+      return doc['role'];
+    }
+    return null;
+  }
+
+  void handleLogin() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      String? role = await getUserRole(user.uid);
+      if (role == 'user') {
+        // Navigate to User Home Page
+      } else if (role == 'service_provider') {
+        // Navigate to Service Provider Home Page
+      }
     }
   }
 }
-
 

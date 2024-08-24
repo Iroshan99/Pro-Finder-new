@@ -40,6 +40,7 @@ dependencies:
   cloud_firestore: ^4.17.3
   dialog_flowtter: ^0.3.3
   http: ^0.13.6
+  flutter_rating_bar: ^4.0.1
 
 dev_dependencies:
   flutter_test:

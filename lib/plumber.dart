@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:test8/ChatPage.dart';
+import 'package:test8/PaymentPortal.dart';
 import 'package:test8/accounts.dart';
 import 'package:test8/category.dart';
 import 'package:test8/notification.dart';
@@ -89,7 +91,7 @@ class _PaintersPageState extends State<plumber> {
                 final painterName = painter['name'];
                 return ListTile(
                   leading: Icon(
-                    Icons.brush,
+                    Icons.build,
                     color: _getColorFromName(painterName),
                   ),
                   title: Text(painterName),
@@ -191,25 +193,67 @@ class ServiceProviderProfile extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Name: ${serviceProviderData['name']}', style: TextStyle(fontSize: 20)),
+                CircleAvatar(
+                  radius: 80,
+                  backgroundColor: Colors.blueAccent,
+                  child: Text(
+                    serviceProviderData['name'][0].toUpperCase(),
+                    style: TextStyle(fontSize: 50, color: Colors.white),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Text(
+                  serviceProviderData['name'],
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                ),
                 SizedBox(height: 10),
-                Text('Location: ${serviceProviderData['location']}', style: TextStyle(fontSize: 18)),
+                Text(
+                  serviceProviderData['location'],
+                  style: TextStyle(fontSize: 20),
+                ),
                 SizedBox(height: 10),
-                Text('Price: ₹${serviceProviderData['price']}', style: TextStyle(fontSize: 18)),
+                Text(
+                  '₹${serviceProviderData['price']}',
+                  style: TextStyle(fontSize: 20),
+                ),
                 SizedBox(height: 10),
-                Text('Category: ${serviceProviderData['category']}', style: TextStyle(fontSize: 18)),
+                Text(
+                  serviceProviderData['category'],
+                  style: TextStyle(fontSize: 20),
+                ),
                 SizedBox(height: 10),
-                Text('Mobile: ${serviceProviderData['mobile']}', style: TextStyle(fontSize: 18)),
-                Spacer(),
+                Text(
+                  serviceProviderData['mobile'],
+                  style: TextStyle(fontSize: 20),
+                ),
+                SizedBox(height: 20),
+                RatingBar.builder(
+                  initialRating: serviceProviderData['rating'] ?? 4.0,
+                  minRating: 1,
+                  direction: Axis.horizontal,
+                  allowHalfRating: true,
+                  itemCount: 5,
+                  itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                  itemBuilder: (context, _) => Icon(
+                    Icons.star,
+                    color: Colors.yellow,
+                  ),
+                  onRatingUpdate: (rating) {
+                    // Handle rating update logic here
+                  },
+                ),
+                SizedBox(height: 30),
                 ElevatedButton(
                   onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentPortal()));
                     // Handle payment logic here
                   },
                   child: Text('Pay Now'),
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.blue,
                     minimumSize: Size(double.infinity, 50),
                   ),
                 ),

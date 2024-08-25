@@ -95,10 +95,9 @@ class _UserRegistrationPageState extends State<UserRegistrationPage> {
       ),
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blue.shade200, Colors.blue.shade900],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+          image: DecorationImage(
+            image: AssetImage('assets/Account.jpg'), // Replace with your image path
+            fit: BoxFit.cover,
           ),
         ),
         child: Padding(
@@ -157,7 +156,7 @@ class _UserRegistrationPageState extends State<UserRegistrationPage> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        color: Colors.blue,
+        color: Colors.blue.shade800,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -197,3 +196,4 @@ class _UserRegistrationPageState extends State<UserRegistrationPage> {
     );
   }
 }
+

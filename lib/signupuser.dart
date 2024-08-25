@@ -205,7 +205,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => loginuser()),
+                            MaterialPageRoute(builder: (context) => LoginUser()),
                           );
                         },
                         style: TextButton.styleFrom(

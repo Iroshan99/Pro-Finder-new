@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -94,7 +95,7 @@ class _ServiceProviderRegistrationPageState extends State<ServiceProviderRegistr
         backgroundColor: Colors.blue,
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(0.001),
         child: Column(
           children: [
             TextField(controller: nameController, decoration: InputDecoration(labelText: 'Name')),
@@ -110,7 +111,7 @@ class _ServiceProviderRegistrationPageState extends State<ServiceProviderRegistr
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        color: Colors.blue,
+        color: Colors.blue, 
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -118,6 +119,7 @@ class _ServiceProviderRegistrationPageState extends State<ServiceProviderRegistr
               icon: Icon(Icons.request_page, color: Colors.white),
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => RequestHistoryPage()));
+   
               },
             ),
             IconButton(
@@ -136,5 +138,5 @@ class _ServiceProviderRegistrationPageState extends State<ServiceProviderRegistr
         ),
       ),
     );
-  }
+  } 
 }

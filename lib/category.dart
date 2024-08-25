@@ -88,7 +88,7 @@ class ProFinderPage extends StatelessWidget {
                 ),
                 CategoryButton(
                   title: 'Cleaner',
-                  imagePath: 'assets/tutor.jpg', 
+                  imagePath: 'assets/Cleaner.png', 
                   onPressed: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => tutor()));
@@ -96,7 +96,7 @@ class ProFinderPage extends StatelessWidget {
                 ),
                 CategoryButton(
                   title: 'Care Giver',
-                  imagePath: 'assets/Caregiver.jpg', 
+                  imagePath: 'assets/Caregiver.jpg',
                   onPressed: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => caregiver()));

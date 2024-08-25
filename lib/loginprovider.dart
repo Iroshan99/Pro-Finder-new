@@ -15,7 +15,6 @@ class loginprovider extends StatelessWidget {
         '/': (context) => SignInPage(),
         '/homepage': (context) => homeprovider(),
         '/forgotpassword': (context) => ForgotPasswordPage(),
-        
       },
     );
   }
@@ -84,6 +83,7 @@ class SignInPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
                     ),
+                    prefixIcon: Icon(Icons.email, color: Colors.black),
                   ),
                 ),
                 SizedBox(height: 10),
@@ -98,6 +98,7 @@ class SignInPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
                     ),
+                    prefixIcon: Icon(Icons.lock, color: Colors.black),
                   ),
                   obscureText: true,
                 ),
@@ -125,7 +126,7 @@ class SignInPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                 SizedBox(height: 20),
+                SizedBox(height: 20),
                 TextButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/forgotpassword');
@@ -152,13 +153,46 @@ class SignInPage extends StatelessWidget {
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    User? user = await _auth.signInWithEmailAndpassword(email, password);
+    try {
+      User? user = await _auth.signInWithEmailAndpassword(email, password);
 
-    if (user != null) {
-      print("Successfully logged in");
-      Navigator.pushNamed(context, "/homepage");
-    } else {
-      print("Some error occurred");
+      if (user != null) {
+        // Display a success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Successfully logged in"),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        Navigator.pushNamed(context, "/homepage");
+      }
+    } on FirebaseAuthException catch (e) {
+      String errorMessage;
+
+      if (e.code == 'user-not-found') {
+        errorMessage = 'No user found for that email.';
+      } else if (e.code == 'wrong-password') {
+        errorMessage = 'Wrong password provided.';
+      } else {
+        errorMessage = 'An error occurred. Please try again.';
+      }
+
+      // Display the error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } catch (e) {
+      // Fallback for any other error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("An error occurred. Please try again."),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 }

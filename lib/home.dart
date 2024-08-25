@@ -31,7 +31,7 @@ class ProFinderPage extends StatelessWidget {
     await FirebaseAuth.instance.signOut();
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => loginuser()),
+      MaterialPageRoute(builder: (context) => LoginUser()),
     );
   }
 
@@ -139,7 +139,7 @@ class ProFinderPage extends StatelessWidget {
                 ),
                 CategoryButton(
                   title: 'Cleaner',
-                  imagePath: 'assets/tutor.jpg',
+                  imagePath: 'assets/Cleaner.png',
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => tutor()));
                   },

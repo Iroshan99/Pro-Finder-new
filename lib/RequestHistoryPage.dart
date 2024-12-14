@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:test8/ChatPage.dart';
 import 'package:test8/accountprovider.dart';
 
+
 class RequestHistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -16,50 +17,65 @@ class RequestHistoryPage extends StatelessWidget {
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
-            .collection('status_updates')
+            .collection('requests')
             .where('serviceProviderId', isEqualTo: currentUser?.uid)
-            .orderBy('timestamp', descending: true)
+            .where('status', whereIn: ['accepted', 'rejected'])
             .snapshots(),
         builder: (context, snapshot) {
-          // Logging for debugging
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            print("Connection state: waiting");
-          }
-          if (snapshot.hasError) {
-            print("Error: ${snapshot.error}");
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
           if (!snapshot.hasData) {
-            print("No data available");
             return Center(child: CircularProgressIndicator());
           }
 
-          final updates = snapshot.data!.docs;
-          print("Number of updates: ${updates.length}");
+          final requests = snapshot.data!.docs;
 
-          if (updates.isEmpty) {
-            return Center(child: Text('No request history found.'));
+          if (requests.isEmpty) {
+            return Center(
+              child: Text(
+                'No request history available.',
+                style: TextStyle(fontSize: 18, color: Colors.grey),
+              ),
+            );
           }
 
           return ListView.builder(
-            itemCount: updates.length,
+            itemCount: requests.length,
             itemBuilder: (context, index) {
-              final update = updates[index];
-              final requestId = update['requestId'];
-              final status = update['status'];
-              final userName = update['userName'];
-              final timestamp = update['timestamp']?.toDate();
+              final request = requests[index];
+              final Map<String, dynamic>? requestData = request.data() as Map<String, dynamic>?;
 
-              return ListTile(
-                title: Text('Request ID: $requestId'),
-                subtitle: Text(
-                    'User: $userName\nStatus: $status\nTime: ${timestamp != null ? timestamp.toString() : 'Unknown time'}'),
+              final userName = requestData?['userName'] ?? 'Unknown User';
+              final userLocation = requestData?['userLocation'] ?? 'No location provided';
+              final status = requestData?['status'] ?? 'Unknown';
+              final scheduledDate = requestData?['scheduledDate'] ?? '';
+              final scheduledTime = requestData?['scheduledTime'] ?? '';
+
+              return Card(
+                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                child: ListTile(
+                  title: Text(
+                    userName,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Location: $userLocation'),
+                      Text('Status: ${status[0].toUpperCase()}${status.substring(1)}'),
+                      if (status == 'accepted' && scheduledDate.isNotEmpty && scheduledTime.isNotEmpty)
+                        Text('Scheduled: $scheduledDate at $scheduledTime'),
+                    ],
+                  ),
+                  trailing: Icon(
+                    status == 'accepted' ? Icons.check_circle : Icons.cancel,
+                    color: status == 'accepted' ? Colors.green : Colors.red,
+                  ),
+                ),
               );
             },
           );
         },
       ),
-      bottomNavigationBar: BottomAppBar(
+       bottomNavigationBar: BottomAppBar(
         color: Colors.blue,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

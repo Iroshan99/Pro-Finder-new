@@ -29,19 +29,12 @@ class notification extends StatelessWidget {
             itemCount: messages.length,
             itemBuilder: (context, index) {
               final message = messages[index];
+              final messageText = message['message'];
+              final timestamp = message['timestamp']?.toDate()?.toString() ?? 'Unknown time';
+
               return ListTile(
-                title: FutureBuilder<DocumentSnapshot>(
-                  future: FirebaseFirestore.instance.collection('users').doc(message['userId']).get(),
-                  builder: (context, userSnapshot) {
-                    if (!userSnapshot.hasData) {
-                      return CircularProgressIndicator();
-                    }
-                    final userData = userSnapshot.data!.data() as Map<String, dynamic>;
-                    final userName = userData['name'];
-                    return Text('$userName: ${message['message']}');
-                  },
-                ),
-                subtitle: Text(message['timestamp'].toDate().toString()),
+                title: Text(messageText),
+                subtitle: Text(timestamp),
               );
             },
           );
@@ -56,35 +49,30 @@ class notification extends StatelessWidget {
               icon: Icon(Icons.request_page, color: Colors.white),
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => requests()));
-                // Handle requests
               },
             ),
             IconButton(
               icon: Icon(Icons.notifications, color: Colors.white),
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => notification()));
-                // Handle notifications
               },
             ),
             IconButton(
               icon: Icon(Icons.category, color: Colors.white),
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryPage()));
-                // Handle category
               },
             ),
             IconButton(
               icon: Icon(Icons.chat, color: Colors.white),
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage()));
-                // Handle chat
               },
             ),
             IconButton(
               icon: Icon(Icons.account_circle, color: Colors.white),
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => accounts()));
-                // Handle account
               },
             ),
           ],

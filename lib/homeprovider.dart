@@ -26,30 +26,29 @@ class _RequestsPageState extends State<homeprovider> {
   }
 
   Future<void> fetchProfilePic() async {
-  if (currentUser != null) {
-    DocumentSnapshot userDoc = await FirebaseFirestore.instance
-        .collection('service_providers')
-        .doc(currentUser!.uid)
-        .get();
+    if (currentUser != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('service_providers')
+          .doc(currentUser!.uid)
+          .get();
 
-    if (userDoc.exists) {
-      Map<String, dynamic>? data = userDoc.data() as Map<String, dynamic>?;
-      if (data != null && data.containsKey('profilePicUrl')) {
-        setState(() {
-          profilePicUrl = data['profilePicUrl'];
-        });
-        print('Profile picture URL fetched: $profilePicUrl');
+      if (userDoc.exists) {
+        Map<String, dynamic>? data = userDoc.data() as Map<String, dynamic>?;
+        if (data != null && data.containsKey('profilePicUrl')) {
+          setState(() {
+            profilePicUrl = data['profilePicUrl'];
+          });
+          print('Profile picture URL fetched: $profilePicUrl');
+        } else {
+          print('Profile picture URL not found in Firestore.');
+        }
       } else {
-        print('Profile picture URL not found in Firestore.');
+        print('User document does not exist.');
       }
     } else {
-      print('User document does not exist.');
+      print('No current user found.');
     }
-  } else {
-    print('No current user found.');
   }
-}
-
 
   Future<String> fetchUserName(String userId) async {
     DocumentSnapshot userDoc = await FirebaseFirestore.instance
@@ -71,57 +70,70 @@ class _RequestsPageState extends State<homeprovider> {
     });
   }
 
-  void updateRequestStatus(String requestId, String status, String userId, BuildContext context) async {
-    String userName = await fetchUserName(currentUser?.uid ?? '');
+  Future<void> scheduleService(String requestId, String userId, String userName, BuildContext context) async {
+    TextEditingController dateController = TextEditingController();
+    TextEditingController timeController = TextEditingController();
 
-    FirebaseFirestore.instance.collection('requests').doc(requestId).update({
-      'status': status,
-    });
-
-    FirebaseFirestore.instance.collection('status_updates').add({
-      'requestId': requestId,
-      'status': status,
-      'timestamp': FieldValue.serverTimestamp(),
-      'serviceProviderId': currentUser?.uid,
-      'userId': userId,
-      'userName': userName,
-    });
-
-    String message = status == 'accepted'
-        ? 'Your request from $userName has been accepted'
-        : 'Your request from $userName has been rejected';
-    sendMessage(userId, userName, message);
-
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('Request $status'),
-    ));
-  }
-
-  void _confirmLogout(BuildContext context) {
-    showDialog(
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Log Out'),
-          content: Text('Are you sure you want to log out?'),
-          actions: <Widget>[
+          title: Text('Schedule Service'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: dateController,
+                decoration: InputDecoration(labelText: 'Date (e.g., 2024-12-25)'),
+              ),
+              TextField(
+                controller: timeController,
+                decoration: InputDecoration(labelText: 'Time (e.g., 10:00 AM - 12:00 PM)'),
+              ),
+            ],
+          ),
+          actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
-              child: Text('No'),
+              child: Text('Cancel'),
             ),
             TextButton(
-              child: Text("Yes"),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                _logout(context); // Proceed with logout
+              onPressed: () async {
+                String scheduledDate = dateController.text;
+                String scheduledTime = timeController.text;
+
+                FirebaseFirestore.instance.collection('requests').doc(requestId).update({
+                  'status': 'accepted',
+                  'scheduledDate': scheduledDate,
+                  'scheduledTime': scheduledTime,
+                });
+
+                FirebaseFirestore.instance.collection('messages').add({
+                  'userId': userId,
+                  'userName': userName,
+                  'message':
+                      'Your service has been scheduled for $scheduledDate at $scheduledTime. by $userName',
+                  'timestamp': FieldValue.serverTimestamp(),
+                });
+
+                setState(() {}); // Refresh UI after scheduling
+                Navigator.of(context).pop();
               },
+              child: Text('Schedule'),
             ),
           ],
         );
       },
     );
+  }
+
+  void updateRequestStatus(String requestId, String status, BuildContext context) {
+    FirebaseFirestore.instance.collection('requests').doc(requestId).update({
+      'status': status,
+    });
+    setState(() {}); // Refresh UI to remove the request from the page
   }
 
   @override
@@ -150,6 +162,7 @@ class _RequestsPageState extends State<homeprovider> {
         stream: FirebaseFirestore.instance
             .collection('requests')
             .where('serviceProviderId', isEqualTo: currentUser?.uid)
+            .where('status', isEqualTo: 'pending') // Show only pending requests
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -172,7 +185,7 @@ class _RequestsPageState extends State<homeprovider> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     ElevatedButton(
-                      onPressed: () => updateRequestStatus(requestId, 'accepted', userId, context),
+                      onPressed: () => scheduleService(requestId, userId, userName, context),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
                       ),
@@ -180,7 +193,7 @@ class _RequestsPageState extends State<homeprovider> {
                     ),
                     SizedBox(width: 8),
                     ElevatedButton(
-                      onPressed: () => updateRequestStatus(requestId, 'rejected', userId, context),
+                      onPressed: () => updateRequestStatus(requestId, 'rejected', context),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                       ),
@@ -242,6 +255,33 @@ class _RequestsPageState extends State<homeprovider> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => loginprovider()),
+    );
+  }
+
+  void _confirmLogout(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Log Out'),
+          content: Text('Are you sure you want to log out?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('No'),
+            ),
+            TextButton(
+              child: Text("Yes"),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                _logout(context); // Proceed with logout
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

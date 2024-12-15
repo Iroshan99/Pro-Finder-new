@@ -61,7 +61,8 @@ class _RequestsPageState extends State<homeprovider> {
     return 'Unknown User';
   }
 
-  void sendMessage(String userId, String userName, String message) {
+  Future<void> sendMessage(String userId, String message) async {
+    String userName = await fetchUserName(currentUser?.uid ?? 'Unknown ID');
     FirebaseFirestore.instance.collection('messages').add({
       'userId': userId,
       'userName': userName, // Store the user's name
@@ -71,6 +72,7 @@ class _RequestsPageState extends State<homeprovider> {
   }
 
   Future<void> scheduleService(String requestId, String userId, String userName, BuildContext context) async {
+    String userName = await fetchUserName(currentUser?.uid ?? 'Unknown ID');
     TextEditingController dateController = TextEditingController();
     TextEditingController timeController = TextEditingController();
 
